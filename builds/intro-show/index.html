@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>intro-show</title>
+    <style>
+        * { margin: 0; padding: 0; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+        #unity-container { width: 100%; height: 100%; }
+        #unity-canvas { width: 100%; height: 100%; background: #231F20; }
+        #unity-loading-bar { display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+        #unity-progress-bar-empty { width: 200px; height: 18px; background: #3B3B3B; border-radius: 9px; }
+        #unity-progress-bar-full { width: 0%; height: 100%; background: #4DB8FF; border-radius: 9px; }
+    </style>
+</head>
+<body>
+    <div id="unity-container">
+        <canvas id="unity-canvas" tabindex="-1"></canvas>
+        <div id="unity-loading-bar">
+            <div id="unity-progress-bar-empty">
+                <div id="unity-progress-bar-full"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var buildUrl = "Build";
+        var loaderUrl = buildUrl + "/intro-show.loader.js";
+        var config = {
+            dataUrl: buildUrl + "/intro-show.data.gz",
+            frameworkUrl: buildUrl + "/intro-show.framework.js.gz",
+            codeUrl: buildUrl + "/intro-show.wasm.gz",
+            streamingAssetsUrl: "StreamingAssets",
+            companyName: "Transitional Forms",
+            productName: "intro-show",
+            productVersion: "0.9.6",
+        };
+
+        var container = document.querySelector("#unity-container");
+        var canvas = document.querySelector("#unity-canvas");
+        var loadingBar = document.querySelector("#unity-loading-bar");
+        var progressBarFull = document.querySelector("#unity-progress-bar-full");
+
+        loadingBar.style.display = "block";
+
+        var script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onload = () => {
+            createUnityInstance(canvas, config, (progress) => {
+                progressBarFull.style.width = 100 * progress + "%";
+            }).then((unityInstance) => {
+                loadingBar.style.display = "none";
+            }).catch((message) => {
+                alert(message);
+            });
+        };
+        document.body.appendChild(script);
+    </script>
+</body>
+</html>

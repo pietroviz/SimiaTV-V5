@@ -1,0 +1,10 @@
+{
+  "name": "simiatv-v5",
+  "version": "5.0.0",
+  "description": "SiMia World — Interactive children's TV platform with Unity WebGL show builder",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve . -l 8080 --cors",
+    "start": "npx serve . -l 8080 --cors"
+  }
+}

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920" />
+  <title>SiMia World</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ═══════════════════════════════════════════════
+       LOADER SCREEN
+       ═══════════════════════════════════════════════ -->
+  <div id="loader-screen" class="screen active">
+    <div class="loader-content">
+      <img class="loader-logo" src="assets/logo/SimiaTV-LogoMain.png" alt="SiMia World" />
+      <div class="loader-tagline" id="loader-tagline">Here we go!</div>
+      <div class="loader-dots">
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════
+       EXPLORE SCREEN
+       ═══════════════════════════════════════════════ -->
+  <div id="explore-screen" class="screen">
+
+    <!-- Collapsed Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-item" data-action="search" data-index="0">
+        <img src="assets/graphics/Icon_Search.png" alt="Search" class="sidebar-icon" />
+        <span class="sidebar-label">Search</span>
+      </div>
+      <div class="sidebar-item" data-action="home" data-index="1">
+        <img src="assets/graphics/Icon_Home.png" alt="Home" class="sidebar-icon" />
+        <span class="sidebar-label">Home</span>
+      </div>
+      <div class="sidebar-item" data-action="create" data-index="2">
+        <img src="assets/graphics/Icon_Create.png" alt="Create" class="sidebar-icon" />
+        <span class="sidebar-label">Create</span>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-item" data-action="settings" data-index="3">
+        <img src="assets/graphics/Icon_Settings.png" alt="Settings" class="sidebar-icon" />
+        <span class="sidebar-label">Settings</span>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="explore-content">
+      <div class="show-tabs-container">
+        <div id="show-tabs"></div>
+      </div>
+      <h1 id="page-title" class="screen-title">Explore</h1>
+      <div id="content-area"></div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════
+       PLAYER SCREEN
+       ═══════════════════════════════════════════════ -->
+  <div id="player-screen" class="screen">
+    <div class="player-container">
+      <img id="player-poster" class="player-poster" src="" alt="" />
+      <video id="player-video" playsinline></video>
+      <canvas id="webgl-canvas" class="webgl-canvas"></canvas>
+      <!-- Watermark logo — outside overlay so it stays visible -->
+      <img class="player-watermark" src="assets/logo/SimiaTV-LogoWatermark.png" alt="SiMia TV" />
+
+      <div class="player-overlay" id="player-overlay">
+
+        <!-- Back button — top left -->
+        <button class="player-back" id="player-back-btn" data-control="0">
+          <span class="player-back-arrow">&larr;</span>
+          <span class="player-back-label">Back</span>
+        </button>
+
+        <!-- Hamburger launch button — top right -->
+        <button class="player-launch-btn" id="launch-food-btn" data-control="3" title="Launch food!">
+          <svg class="launch-btn-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- bun top -->
+            <path d="M8 30 C8 16, 56 16, 56 30 Z" fill="#E8A54B"/>
+            <ellipse cx="20" cy="24" rx="2" ry="1.5" fill="#C4E84B" opacity="0.7"/>
+            <ellipse cx="36" cy="22" rx="2" ry="1.5" fill="#C4E84B" opacity="0.7"/>
+            <ellipse cx="44" cy="26" rx="2" ry="1.5" fill="#C4E84B" opacity="0.7"/>
+            <!-- lettuce -->
+            <path d="M6 31 Q12 35 18 31 Q24 35 30 31 Q36 35 42 31 Q48 35 54 31 Q58 33 58 33 L6 33 Z" fill="#5DBF2A"/>
+            <!-- patty -->
+            <rect x="9" y="33" width="46" height="8" rx="3" fill="#7B3F24"/>
+            <!-- cheese -->
+            <polygon points="8,41 14,45 22,41 30,45 38,41 46,45 56,41 56,43 8,43" fill="#FFD633"/>
+            <!-- bun bottom -->
+            <path d="M8 43 L56 43 C56 50, 8 50, 8 43 Z" fill="#E8A54B"/>
+          </svg>
+        </button>
+
+        <!-- Bottom gradient overlay -->
+        <div class="player-bottom-gradient"></div>
+
+        <!-- Play button + episode info — bottom left -->
+        <div class="player-info-row">
+          <button class="player-play-circle" id="play-pause-btn" data-control="1">
+            <img class="player-play-icon" id="play-pause-icon" src="assets/graphics/Icon_Play.png" alt="Play" />
+          </button>
+          <div class="player-info-text">
+            <h2 id="player-episode-title" class="player-ep-title"></h2>
+            <p id="player-show-title" class="player-show-name"></p>
+          </div>
+        </div>
+
+        <!-- Progress bar — bottom -->
+        <div class="player-progress-row">
+          <span class="player-time" id="current-time">0:00</span>
+          <div class="player-progress-track">
+            <div class="player-progress-fill" id="progress-fill"></div>
+            <div class="player-scrubber" id="player-scrubber"></div>
+          </div>
+          <span class="player-time player-time-right" id="total-time">0:00</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════
+       SEARCH SCREEN
+       ═══════════════════════════════════════════════ -->
+  <div id="search-screen" class="screen">
+
+    <!-- Sidebar (shared design, different id for focus) -->
+    <nav class="sidebar" id="search-sidebar">
+      <div class="sidebar-item" data-action="search" data-index="0">
+        <img src="assets/graphics/Icon_Search.png" alt="Search" class="sidebar-icon" />
+        <span class="sidebar-label">Search</span>
+      </div>
+      <div class="sidebar-item" data-action="home" data-index="1">
+        <img src="assets/graphics/Icon_Home.png" alt="Home" class="sidebar-icon" />
+        <span class="sidebar-label">Home</span>
+      </div>
+      <div class="sidebar-item" data-action="create" data-index="2">
+        <img src="assets/graphics/Icon_Create.png" alt="Create" class="sidebar-icon" />
+        <span class="sidebar-label">Create</span>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-item" data-action="settings" data-index="3">
+        <img src="assets/graphics/Icon_Settings.png" alt="Settings" class="sidebar-icon" />
+        <span class="sidebar-label">Settings</span>
+      </div>
+    </nav>
+
+    <div class="coming-soon-layout">
+      <h1 class="screen-title">Search</h1>
+      <div class="coming-soon-pill">
+        <span>This feature is coming soon.</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════
+       SETTINGS SCREEN
+       ═══════════════════════════════════════════════ -->
+  <div id="settings-screen" class="screen">
+
+    <nav class="sidebar" id="settings-sidebar">
+      <div class="sidebar-item" data-action="search" data-index="0">
+        <img src="assets/graphics/Icon_Search.png" alt="Search" class="sidebar-icon" />
+        <span class="sidebar-label">Search</span>
+      </div>
+      <div class="sidebar-item" data-action="home" data-index="1">
+        <img src="assets/graphics/Icon_Home.png" alt="Home" class="sidebar-icon" />
+        <span class="sidebar-label">Home</span>
+      </div>
+      <div class="sidebar-item" data-action="create" data-index="2">
+        <img src="assets/graphics/Icon_Create.png" alt="Create" class="sidebar-icon" />
+        <span class="sidebar-label">Create</span>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-item" data-action="settings" data-index="3">
+        <img src="assets/graphics/Icon_Settings.png" alt="Settings" class="sidebar-icon" />
+        <span class="sidebar-label">Settings</span>
+      </div>
+    </nav>
+
+    <div class="coming-soon-layout">
+      <h1 class="screen-title">Settings</h1>
+      <div class="coming-soon-pill">
+        <span>This feature is coming soon.</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════
+       SHOW BUILDER SCREEN
+       ═══════════════════════════════════════════════ -->
+  <div id="builder-screen" class="screen">
+    <div class="builder-env-bg" id="builder-env-bg"></div>
+
+    <!-- Show logo layer (above env bg) -->
+    <img class="builder-show-logo" id="builder-show-logo" src="" alt="" />
+
+    <!-- Character layers: char1 and char3 below char2 (center on top) -->
+    <img class="builder-char builder-char-1" id="builder-char-1" src="" alt="" />
+    <img class="builder-char builder-char-3" id="builder-char-3" src="" alt="" />
+    <img class="builder-char builder-char-2" id="builder-char-2" src="" alt="" />
+
+    <div class="builder-vignette"></div>
+
+    <div class="builder-env-label" id="builder-env-label">Environment Background</div>
+    <h1 class="builder-title">My Show</h1>
+
+    <!-- Top-left action buttons -->
+    <div class="builder-actions-top">
+      <button class="builder-btn builder-btn-back" id="builder-back" data-action-index="0">
+        <img class="builder-btn-icon" src="assets/graphics/Icon_Back.png" alt="Back" />
+        <span>Back</span>
+      </button>
+      <button class="builder-btn builder-btn-random" id="builder-random" data-action-index="1">
+        <img class="builder-btn-icon" src="assets/graphics/Icon_Random.png" alt="Random" />
+        <span>Random</span>
+      </button>
+    </div>
+
+    <!-- Bottom-left play button -->
+    <button class="builder-btn builder-btn-play" id="builder-play" data-action-index="2">
+      <img class="builder-btn-icon" src="assets/graphics/Icon_Play.png" alt="Play" />
+      <span>Play Now</span>
+    </button>
+
+    <!-- Slot selector row -->
+    <div class="builder-selector-row" id="builder-slots"></div>
+
+    <!-- Up/Down arrows (positioned over focused slot by JS) -->
+    <div class="builder-arrows" id="builder-arrows">
+      <button class="builder-arrow builder-arrow-up" id="builder-arrow-up">
+        <img src="assets/graphics/Icon_Up.png" alt="Up" class="builder-arrow-icon" />
+      </button>
+      <button class="builder-arrow builder-arrow-down" id="builder-arrow-down">
+        <img src="assets/graphics/Icon_Down.png" alt="Down" class="builder-arrow-icon" />
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Scripts -->
+<script src="js/data.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/introshow.js"></script>
+<script src="js/app.js"></script>
+
+<!-- Viewport scaling for 1920x1080 -->
+<script>
+  function scaleApp() {
+    const app = document.getElementById('app');
+    const scaleX = window.innerWidth / 1920;
+    const scaleY = window.innerHeight / 1080;
+    const scale = Math.min(scaleX, scaleY);
+    app.style.transform = `scale(${scale})`;
+    app.style.transformOrigin = 'top left';
+    const offsetX = (window.innerWidth - 1920 * scale) / 2;
+    const offsetY = (window.innerHeight - 1080 * scale) / 2;
+    app.style.marginLeft = offsetX + 'px';
+    app.style.marginTop = offsetY + 'px';
+  }
+  window.addEventListener('resize', scaleApp);
+  window.addEventListener('DOMContentLoaded', scaleApp);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimiaAgent Web Interface</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <div id="header">
+            <h1>SimiaAgent</h1>
+            <div id="status">Status: <span id="status-text">Disconnected</span></div>
+        </div>
+        <div id="chat-container">
+            <div id="message-list"></div>
+        </div>
+        <div id="show-templates-container">
+            <h3>Show Templates</h3>
+            <div id="templates-dropdown" class="dropdown">
+                <button id="templates-dropdown-btn" class="dropdown-btn">Select Show Template</button>
+                <div id="templates-dropdown-content" class="dropdown-content">
+                    <div id="templates-loading">Loading templates...</div>
+                </div>
+            </div>
+        </div>
+        <div id="input-container">
+            <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
+            <button id="send-button">Send</button>
+            <button id="clear-button">Clear</button>
+        </div>
+        <div id="ui-controls">
+            <div id="ui-visibility-toggle">
+                <label for="ui-toggle-switch" class="toggle-container">
+                    <span class="toggle-text">UI Visibility:</span>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="ui-toggle-switch" >
+                        <span class="toggle-slider"></span>
+                    </div>
+                    <span id="ui-toggle-label">Show</span>
+                </label>
+            </div>
+        </div>
+        <div id="tiktok-controls-container">
+            <div id="tiktok-header" class="collapsible-header">
+                <h3>TikTok Live Controls</h3>
+                <button id="tiktok-toggle-button" class="toggle-button" title="Expand TikTok Controls">▶</button>
+            </div>
+            <div id="tiktok-content" class="collapsible-content collapsed">
+                <div id="tiktok-connection-form">
+                    <div class="input-group">
+                        <label for="tiktok-user-id">User ID:</label>
+                        <input type="text" id="tiktok-user-id" placeholder="e.g., username123 (either User ID or Room ID)" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="tiktok-room-id">Room ID:</label>
+                        <input type="text" id="tiktok-room-id" placeholder="e.g., 7123456789 (either User ID or Room ID)" autocomplete="off">
+                    </div>
+                    <div class="input-note">
+                        <small>💡 Enter either a User ID or Room ID to connect to a TikTok Live stream</small>
+                    </div>
+                    <div id="tiktok-button-controls">
+                        <button id="tiktok-start-button" title="Start TikTok Event Handler">🎬 Start TikTok</button>
+                        <button id="tiktok-stop-button" title="Stop TikTok Event Handler" disabled>⏹️ Stop TikTok</button>
+                    </div>
+                    <div id="tiktok-status">
+                        <span id="tiktok-status-text">Disconnected</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="twitch-controls-container">
+            <div id="twitch-header" class="collapsible-header">
+                <h3>Twitch Controls</h3>
+                <button id="twitch-toggle-button" class="toggle-button" title="Expand Twitch Controls">▶</button>
+            </div>
+            <div id="twitch-content" class="collapsible-content collapsed">
+                <div id="twitch-connection-form">
+                    <div class="input-group">
+                        <label for="twitch-channel">Channel Name:</label>
+                        <input type="text" id="twitch-channel" placeholder="e.g., your_channel_name" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="twitch-username">Username:</label>
+                        <input type="text" id="twitch-username" placeholder="e.g., your_username" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="twitch-access-token">Access Token:</label>
+                        <input type="password" id="twitch-access-token" placeholder="oauth:your_access_token" autocomplete="off">
+                    </div>
+                    <div class="input-note">
+                        <small>💡 Get your Twitch access token from <a href="https://twitchapps.com/tmi/" target="_blank" style="color: #9146ff;">TMI</a></small>
+                    </div>
+                    <div id="twitch-button-controls">
+                        <button id="twitch-start-button" title="Start Twitch Event Handler">📺 Start Twitch</button>
+                        <button id="twitch-stop-button" title="Stop Twitch Event Handler" disabled>⏹️ Stop Twitch</button>
+                    </div>
+                    <div id="twitch-status">
+                        <span id="twitch-status-text">Disconnected</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="subtitle-controls-container">
+            <div id="subtitle-header" class="collapsible-header">
+                <h3>Subtitle Controls</h3>
+                <button id="subtitle-toggle-button" class="toggle-button" title="Expand Subtitle Controls">▶</button>
+            </div>
+            <div id="subtitle-content" class="collapsible-content collapsed">
+                <div id="subtitle-animation-controls">
+                    <div class="control-group">
+                        <h4>Animation Settings</h4>
+                        <div class="input-group">
+                            <label for="subtitle-animation-mode">Animation Mode:</label>
+                            <select id="subtitle-animation-mode">
+                                <option value="Instant">Instant</option>
+                                <option value="Progressive">Progressive</option>
+                                <option value="TikTokStyle" selected>TikTok Style</option>
+                                <option value="TypewriterStyle">Typewriter</option>
+                                <option value="FadeInWords">Fade In Words</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="subtitle-word-timing-enabled" checked>
+                                <span class="checkmark"></span>
+                                Enable Word Timing Animations
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <h4>Visual Effects</h4>
+                        <div class="input-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="subtitle-punchy-animation" checked>
+                                <span class="checkmark"></span>
+                                Enable Punchy Animation
+                            </label>
+                        </div>
+                        <div class="input-group">
+                            <label for="subtitle-punch-scale">Punch Scale:</label>
+                            <div class="slider-group">
+                                <input type="range" id="subtitle-punch-scale" min="1.0" max="2.0" step="0.1" value="1.2">
+                                <span id="subtitle-punch-scale-value">1.2</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="subtitle-word-highlight" checked>
+                                <span class="checkmark"></span>
+                                Enable Word Highlighting
+                            </label>
+                        </div>
+                        <div class="input-group">
+                            <label for="subtitle-highlight-color">Highlight Color:</label>
+                            <div class="color-group">
+                                <input type="color" id="subtitle-highlight-color" value="#ffff00">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="subtitle-highlight-duration">Highlight Duration (s):</label>
+                            <div class="slider-group">
+                                <input type="range" id="subtitle-highlight-duration" min="0.1" max="2.0" step="0.1" value="0.3">
+                                <span id="subtitle-highlight-duration-value">0.3</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <h4>Performance</h4>
+                        <div class="input-group">
+                            <label for="subtitle-max-duration">Max Visible Duration (seconds):</label>
+                            <div class="slider-group">
+                                <input type="range" id="subtitle-max-duration" min="1" max="10" step="0.5" value="3">
+                                <span id="subtitle-max-duration-value">3.0s</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <h4>Configuration</h4>
+                        <div id="subtitle-button-controls">
+                            <button id="subtitle-apply-button" title="Apply All Settings">✅ Apply Settings</button>
+                        </div>
+                    </div>
+                    
+                    <div id="subtitle-status">
+                        <span id="subtitle-status-text">Ready</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="show-controls">
+            <button id="generate-show-button" title="Generate Show">▶️</button>
+            <button id="play-show-button" title="Replay Show">🔄</button>
+            <button id="live-stream-button" title="Start Live Stream">📡</button>
+            <button id="stop-show-button" title="Stop Show">⏹️</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
