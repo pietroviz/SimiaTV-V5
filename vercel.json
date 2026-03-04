@@ -6,6 +6,27 @@
   ],
   "headers": [
     {
+      "source": "/builds/intro-show/Build/intro-show.wasm",
+      "headers": [
+        { "key": "Content-Encoding", "value": "gzip" },
+        { "key": "Content-Type", "value": "application/wasm" }
+      ]
+    },
+    {
+      "source": "/builds/intro-show/Build/intro-show.framework.js",
+      "headers": [
+        { "key": "Content-Encoding", "value": "gzip" },
+        { "key": "Content-Type", "value": "application/javascript" }
+      ]
+    },
+    {
+      "source": "/builds/intro-show/Build/intro-show.data",
+      "headers": [
+        { "key": "Content-Encoding", "value": "gzip" },
+        { "key": "Content-Type", "value": "application/octet-stream" }
+      ]
+    },
+    {
       "source": "/builds/(.*).wasm.gz",
       "headers": [
         { "key": "Content-Encoding", "value": "gzip" },
