@@ -1,21 +1,29 @@
 {
+  "rewrites": [
+    { "source": "/builds/intro-show/Build/intro-show.data", "destination": "/builds/intro-show/Build/intro-show.data.gz" },
+    { "source": "/builds/intro-show/Build/intro-show.framework.js", "destination": "/builds/intro-show/Build/intro-show.framework.js.gz" },
+    { "source": "/builds/intro-show/Build/intro-show.wasm", "destination": "/builds/intro-show/Build/intro-show.wasm.gz" }
+  ],
   "headers": [
     {
-      "source": "/builds/(.*).wasm.gz",
+      "source": "/builds/intro-show/Build/intro-show.data",
       "headers": [
-        { "key": "Content-Type", "value": "application/wasm" }
+        { "key": "Content-Encoding", "value": "gzip" },
+        { "key": "Content-Type", "value": "application/octet-stream" }
       ]
     },
     {
-      "source": "/builds/(.*).framework.js.gz",
+      "source": "/builds/intro-show/Build/intro-show.framework.js",
       "headers": [
+        { "key": "Content-Encoding", "value": "gzip" },
         { "key": "Content-Type", "value": "application/javascript" }
       ]
     },
     {
-      "source": "/builds/(.*).data.gz",
+      "source": "/builds/intro-show/Build/intro-show.wasm",
       "headers": [
-        { "key": "Content-Type", "value": "application/octet-stream" }
+        { "key": "Content-Encoding", "value": "gzip" },
+        { "key": "Content-Type", "value": "application/wasm" }
       ]
     }
   ]

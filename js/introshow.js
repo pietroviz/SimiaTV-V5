@@ -18,9 +18,9 @@ const IntroShowWebGL = (() => {
   const BUILD_PATH = 'builds/intro-show';
   const LOADER_SCRIPT = BUILD_PATH + '/Build/intro-show.loader.js';
   const BUILD_CONFIG = {
-    dataUrl:      BUILD_PATH + '/Build/intro-show.data.gz',
-    frameworkUrl:  BUILD_PATH + '/Build/intro-show.framework.js.gz',
-    codeUrl:       BUILD_PATH + '/Build/intro-show.wasm.gz',
+    dataUrl:      BUILD_PATH + '/Build/intro-show.data',
+    frameworkUrl:  BUILD_PATH + '/Build/intro-show.framework.js',
+    codeUrl:       BUILD_PATH + '/Build/intro-show.wasm',
     streamingAssetsUrl: BUILD_PATH + '/StreamingAssets',
     companyName:   'Simia',
     productName:   'IntroShow',
