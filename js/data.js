@@ -207,11 +207,11 @@ const CHARACTER_WEBGL_MAP = {
   'plink': 'peasant-girl',
   'rook':  'the-boss',
   'jax':   'aj',
-  'lena':  'maria',
-  'sol':   'sporty-grrl',
-  'dash':  'joe',
-  'echo':  'lola',
-  'ari':   'kaya',
+  'lena':  'claire',
+  'sol':   'big-vegas',
+  'dash':  'sporty-granny',
+  'echo':  'ty',
+  'ari':   'x-bot',
 };
 
 const SHOW_CHARACTERS = {
