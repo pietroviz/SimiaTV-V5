@@ -726,6 +726,18 @@ html, body {
   pointer-events: none;
 }
 
+/* ── Player mode variants ─────────────────────── */
+.player-launch-btn.hidden { display: none; }
+.player-launch-btn.webgl-mode {
+  top: auto;
+  bottom: 165px;
+  right: 100px;
+}
+.player-info-row.webgl-compact {
+  bottom: 80px;
+}
+.player-progress-row.hidden-timeline { display: none; }
+
 .player-info-text {
   display: flex;
   flex-direction: column;

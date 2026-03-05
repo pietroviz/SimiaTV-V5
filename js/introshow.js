@@ -103,8 +103,8 @@ const IntroShowWebGL = (() => {
       return;
     }
 
-    // Show the canvas
-    canvas.classList.add('active');
+    // Note: canvas activation (showing it) is handled by start(), not here,
+    // so preloading doesn't flash an empty canvas on screen.
 
     // Check if the Unity loader script is already on the page
     if (typeof createUnityInstance === 'undefined') {
@@ -156,11 +156,11 @@ const IntroShowWebGL = (() => {
       // Load Unity if not already loaded
       if (!unityInstance) {
         await loadUnity();
-      } else {
-        // Unity already loaded — make sure canvas is visible again
-        const canvas = document.getElementById('webgl-canvas');
-        if (canvas) canvas.classList.add('active');
       }
+
+      // Show the canvas now that we're actually starting playback
+      const canvas = document.getElementById('webgl-canvas');
+      if (canvas) canvas.classList.add('active');
 
       // Send config to Unity (or queue if not ready yet)
       if (ready) {
@@ -208,5 +208,13 @@ const IntroShowWebGL = (() => {
 
     isRunning() { return running; },
     isPaused()  { return paused; },
+
+    /**
+     * Preload the Unity WebGL build without starting playback.
+     * Call this when entering the builder screen to reduce startup latency.
+     */
+    preload() {
+      return loadUnity();
+    },
   };
 })();

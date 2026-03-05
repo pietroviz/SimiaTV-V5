@@ -245,12 +245,21 @@ const App = (() => {
     stopPreview(); // stop any thumbnail preview before entering player
     currentEpisode = episode;
     currentShowForPlayer = SHOWS[showArrayIndex] || SHOWS[0];
+    enteredFromBuilder = false;
 
     transitionTo('player-screen');
 
     $('#player-show-title').textContent = currentShowForPlayer.title;
     $('#player-episode-title').textContent = `E${episode.num}: ${episode.title}`;
     $('#player-poster').src = episode.thumbnail;
+
+    // Traditional video mode — hide burger, show timeline, normal layout
+    const burgerBtn = $('#launch-food-btn');
+    if (burgerBtn) { burgerBtn.classList.add('hidden'); burgerBtn.classList.remove('webgl-mode'); }
+    const progressRow = document.querySelector('.player-progress-row');
+    if (progressRow) progressRow.classList.remove('hidden-timeline');
+    const infoRow = document.querySelector('.player-info-row');
+    if (infoRow) infoRow.classList.remove('webgl-compact');
 
     TVNav.goToPlayer();
 
@@ -389,9 +398,13 @@ const App = (() => {
     const scrubber = $('#player-scrubber');
     if (scrubber) scrubber.style.left = '0%';
 
-    // Restore player UI elements that may have been hidden for WebGL mode
+    // Restore player UI elements to default state
     const progressRow = document.querySelector('.player-progress-row');
-    if (progressRow) progressRow.style.display = '';
+    if (progressRow) { progressRow.style.display = ''; progressRow.classList.remove('hidden-timeline'); }
+    const burgerBtn = $('#launch-food-btn');
+    if (burgerBtn) { burgerBtn.classList.remove('hidden', 'webgl-mode'); }
+    const infoRow = document.querySelector('.player-info-row');
+    if (infoRow) infoRow.classList.remove('webgl-compact');
 
     enteredFromBuilder = false;
 
@@ -431,6 +444,11 @@ const App = (() => {
     TVNav.setScreen('builder');
     renderBuilderSlots();
     updateFocus(TVNav.getState());
+
+    // Preload Unity WebGL in background so it's ready when user clicks "Play Now"
+    if (typeof IntroShowWebGL !== 'undefined' && IntroShowWebGL.preload) {
+      IntroShowWebGL.preload().catch(err => console.warn('[App] Unity preload failed:', err));
+    }
   }
 
   function animateSwap(el, newSrc, newAlt) {
@@ -611,8 +629,10 @@ const App = (() => {
   }
 
   function updatePlayerFocus(ns) {
-    // 0 = back, 1 = play/pause, 2 = playhead/scrubber, 3 = launch-food
-    const controls = [$('#player-back-btn'), $('#play-pause-btn'), null, $('#launch-food-btn')];
+    // 0 = back, 1 = play/pause, 2 = playhead/scrubber, 3 = launch-food (WebGL only)
+    const controls = enteredFromBuilder
+      ? [$('#player-back-btn'), $('#play-pause-btn'), null, $('#launch-food-btn')]
+      : [$('#player-back-btn'), $('#play-pause-btn'), null, null];
     if (ns.region === 'player-controls') {
       if (ns.playerControlIndex < controls.length && controls[ns.playerControlIndex]) {
         controls[ns.playerControlIndex].classList.add('focused');
@@ -712,6 +732,14 @@ const App = (() => {
     $('#player-episode-title').textContent = 'Intro Preview';
     $('#player-poster').src = '';
 
+    // WebGL mode — show burger at bottom-right, hide timeline, compact info row
+    const burgerBtn = $('#launch-food-btn');
+    if (burgerBtn) { burgerBtn.classList.remove('hidden'); burgerBtn.classList.add('webgl-mode'); }
+    const progressRow = document.querySelector('.player-progress-row');
+    if (progressRow) progressRow.classList.add('hidden-timeline');
+    const infoRow = document.querySelector('.player-info-row');
+    if (infoRow) infoRow.classList.add('webgl-compact');
+
     TVNav.goToPlayer();
 
     // Build config from the current builder selections
@@ -727,10 +755,6 @@ const App = (() => {
     isPlaying = true;
     $('#play-pause-icon').src = 'assets/graphics/Icon_Pause.png';
     IntroShowWebGL.start(introConfig);
-
-    // Show progress bar (Unity sends progress updates)
-    const progressRow = document.querySelector('.player-progress-row');
-    if (progressRow) progressRow.style.display = '';
 
     showPlayerControls();
   }
@@ -788,5 +812,5 @@ const App = (() => {
 
   document.addEventListener('DOMContentLoaded', init);
 
-  return { showExplore, showPlayer, exitPlayer, showSearch, showSettings, showBuilder };
+  return { showExplore, showPlayer, exitPlayer, showSearch, showSettings, showBuilder, isWebGLMode: () => enteredFromBuilder };
 })();

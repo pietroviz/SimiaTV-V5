@@ -109,10 +109,15 @@ const TVNav = (() => {
         state.sidebarIndex = (state.screen === 'search') ? 0 : 3;
       }
     } else if (state.screen === 'player') {
-      // Up: playhead(2) → play(1) → back(0). Burger(3) is on the right axis.
       if (state.region === 'player-controls') {
-        if (state.playerControlIndex === 3) state.playerControlIndex = 0; // burger → back (up from burger)
-        else if (state.playerControlIndex > 0) state.playerControlIndex--;
+        const isWebGL = typeof App !== 'undefined' && App.isWebGLMode?.();
+        if (isWebGL) {
+          // WebGL: up from burger(3) → back(0), up from play(1) → back(0)
+          if (state.playerControlIndex === 3 || state.playerControlIndex === 1) state.playerControlIndex = 0;
+        } else {
+          // Video: playhead(2) → play(1) → back(0)
+          if (state.playerControlIndex > 0) state.playerControlIndex--;
+        }
       }
     } else if (state.screen === 'builder') {
       if (state.region === 'builder-slots') {
@@ -154,10 +159,15 @@ const TVNav = (() => {
         state.sidebarIndex = Math.min(3, state.sidebarIndex + 1);
       }
     } else if (state.screen === 'player') {
-      // Down: back(0) → play(1) → playhead(2). From burger(3) → play(1).
       if (state.region === 'player-controls') {
-        if (state.playerControlIndex === 3) state.playerControlIndex = 1; // burger → play
-        else if (state.playerControlIndex < 2) state.playerControlIndex++;
+        const isWebGL = typeof App !== 'undefined' && App.isWebGLMode?.();
+        if (isWebGL) {
+          // WebGL: down from back(0) → play(1), down from burger(3) → play(1)
+          if (state.playerControlIndex === 0 || state.playerControlIndex === 3) state.playerControlIndex = 1;
+        } else {
+          // Video: back(0) → play(1) → playhead(2)
+          if (state.playerControlIndex < 2) state.playerControlIndex++;
+        }
       }
     } else if (state.screen === 'search' || state.screen === 'settings') {
       if (state.region === 'sidebar') {
@@ -204,10 +214,16 @@ const TVNav = (() => {
       }
     } else if (state.screen === 'player') {
       if (state.region === 'player-controls') {
-        if (state.playerControlIndex === 3) state.playerControlIndex = 0; // burger → back
-        else if (state.playerControlIndex === 2) {
-          // On playhead — scrub backward
-          if (callbacks.onPlayerAction) callbacks.onPlayerAction('scrub-back');
+        const isWebGL = typeof App !== 'undefined' && App.isWebGLMode?.();
+        if (isWebGL) {
+          // WebGL: left from play(1) → back(0), left from burger(3) → play(1)
+          if (state.playerControlIndex === 1) state.playerControlIndex = 0;
+          else if (state.playerControlIndex === 3) state.playerControlIndex = 1;
+        } else {
+          // Video: left from playhead → scrub backward
+          if (state.playerControlIndex === 2) {
+            if (callbacks.onPlayerAction) callbacks.onPlayerAction('scrub-back');
+          }
         }
       }
     } else if (state.screen === 'builder') {
@@ -262,10 +278,16 @@ const TVNav = (() => {
       }
     } else if (state.screen === 'player') {
       if (state.region === 'player-controls') {
-        if (state.playerControlIndex === 0) state.playerControlIndex = 3; // back → burger (right)
-        else if (state.playerControlIndex === 2) {
-          // On playhead — scrub forward
-          if (callbacks.onPlayerAction) callbacks.onPlayerAction('scrub-forward');
+        const isWebGL = typeof App !== 'undefined' && App.isWebGLMode?.();
+        if (isWebGL) {
+          // WebGL: right from back(0) → play(1), right from play(1) → burger(3)
+          if (state.playerControlIndex === 0) state.playerControlIndex = 1;
+          else if (state.playerControlIndex === 1) state.playerControlIndex = 3;
+        } else {
+          // Video: right from playhead → scrub forward
+          if (state.playerControlIndex === 2) {
+            if (callbacks.onPlayerAction) callbacks.onPlayerAction('scrub-forward');
+          }
         }
       }
     } else if (state.screen === 'builder') {
