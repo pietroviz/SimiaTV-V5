@@ -8,6 +8,7 @@
 
 const IntroShowWebGL = (() => {
   let unityInstance = null;
+  let loadingPromise = null;   // guards against concurrent loadUnity() calls
   let running = false;
   let paused = false;
   let ready = false;
@@ -95,43 +96,49 @@ const IntroShowWebGL = (() => {
   // ── Load Unity WebGL Build ─────────────────────────
 
   async function loadUnity() {
-    if (unityInstance) return; // Already loaded
+    if (unityInstance) return;        // Already loaded
+    if (loadingPromise) return loadingPromise; // Already loading — wait for it
 
-    const canvas = document.getElementById('webgl-canvas');
-    if (!canvas) {
-      console.error('[IntroShow] webgl-canvas element not found');
-      return;
-    }
+    loadingPromise = (async () => {
+      const canvas = document.getElementById('webgl-canvas');
+      if (!canvas) {
+        console.error('[IntroShow] webgl-canvas element not found');
+        return;
+      }
 
-    // Note: canvas activation (showing it) is handled by start(), not here,
-    // so preloading doesn't flash an empty canvas on screen.
+      // Note: canvas activation (showing it) is handled by start(), not here,
+      // so preloading doesn't flash an empty canvas on screen.
 
-    // Check if the Unity loader script is already on the page
-    if (typeof createUnityInstance === 'undefined') {
-      // Dynamically load the Unity loader script
-      await new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = LOADER_SCRIPT;
-        script.onload = resolve;
-        script.onerror = () => reject(new Error('Failed to load Unity loader: ' + LOADER_SCRIPT));
-        document.body.appendChild(script);
-      });
-    }
+      // Check if the Unity loader script is already on the page
+      if (typeof createUnityInstance === 'undefined') {
+        // Dynamically load the Unity loader script
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = LOADER_SCRIPT;
+          script.onload = resolve;
+          script.onerror = () => reject(new Error('Failed to load Unity loader: ' + LOADER_SCRIPT));
+          document.body.appendChild(script);
+        });
+      }
 
-    try {
-      console.log('[IntroShow] Creating Unity instance...');
-      unityInstance = await createUnityInstance(canvas, BUILD_CONFIG, (progress) => {
-        // Loading progress (0 to 1)
-        console.log('[IntroShow] Loading: ' + Math.round(progress * 100) + '%');
-      });
+      try {
+        console.log('[IntroShow] Creating Unity instance...');
+        unityInstance = await createUnityInstance(canvas, BUILD_CONFIG, (progress) => {
+          // Loading progress (0 to 1)
+          console.log('[IntroShow] Loading: ' + Math.round(progress * 100) + '%');
+        });
 
-      // Store reference for the jslib bridge
-      window.unityInstance = unityInstance;
+        // Store reference for the jslib bridge
+        window.unityInstance = unityInstance;
 
-      console.log('[IntroShow] Unity instance created successfully');
-    } catch (err) {
-      console.error('[IntroShow] Failed to create Unity instance:', err);
-    }
+        console.log('[IntroShow] Unity instance created successfully');
+      } catch (err) {
+        console.error('[IntroShow] Failed to create Unity instance:', err);
+        loadingPromise = null; // allow retry on failure
+      }
+    })();
+
+    return loadingPromise;
   }
 
   // ── Public API (matches WebGLScene interface) ──────
